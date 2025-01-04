@@ -29,8 +29,7 @@ class _WebViewViewState extends State<WebViewView> {
       controller: controller,
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
         Factory<VerticalDragGestureRecognizer>(
-          () => VerticalDragGestureRecognizer(),
-        ),
+            () => VerticalDragGestureRecognizer()),
       },
     );
   }
