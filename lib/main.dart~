@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -75,9 +74,7 @@ class _CountryCodeInputState extends State<CountryCodeInput> {
                     onChanged: (value) {
                       setState(() {
                         selectedCountryCode = value;
-                        if (kDebugMode) {
-                          print(selectedCountryCode);
-                        }
+                        print(selectedCountryCode);
                       });
                     },
                     dropdownBuilder: (context, selectedItem) {
