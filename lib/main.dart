@@ -32,113 +32,161 @@ class CountryCodeInput extends StatefulWidget {
 class _CountryCodeInputState extends State<CountryCodeInput> {
   String? selectedCountryCode = "+1";
   TextEditingController phoneController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Country Code Input")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Stack(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 14,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 15),
-                SizedBox(
-                  width: 117,
-                  child: DropdownSearch<String>(
-                    items: (filter, loadProps) => [
-                      '+ 1',
-                      '+ 33',
-                      '+ 44',
-                      '+ 55',
-                      '+ 66',
-                      '+ 77',
-                      '+ 88',
-                      '+ 99',
-                    ],
-                    itemAsString: (item) => item,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCountryCode = value;
-                        if (kDebugMode) {
-                          print(selectedCountryCode);
-                        }
-                      });
-                    },
-                    dropdownBuilder: (context, selectedItem) {
-                      return Row(
-                        children: [
-                          const Icon(
-                            Icons.flag,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 10),
-                          Text('$selectedCountryCode'),
-                        ],
-                      );
-                    },
-                    popupProps: PopupProps.menu(
-                      showSearchBox: true,
-                      searchFieldProps: const TextFieldProps(
-                        decoration: InputDecoration(
-                          hintText: 'Search',
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 13, horizontal: 10),
-                          prefixIcon: Icon(
-                            Icons.search_outlined,
-                            size: 20,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 50,
+        ),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  SizedBox(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: phoneController,
+                            keyboardType: TextInputType.phone,
+                            onTapOutside: (event) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Phone is Required!!!';
+                              } else if (value.length < 15) {
+                                return 'Phone must be at least 15 numbers';
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Phone Number',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-
-                      /// item when open ddl...
-                      itemBuilder: (context, item, isDisabled, isSelected) {
-                        bool isSelect = item == selectedCountryCode;
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: isSelect ? Colors.grey : null,
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.flag,
-                                size: 16,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(item),
+                        const SizedBox(width: 15),
+                        SizedBox(
+                          width: 117,
+                          child: DropdownSearch<String>(
+                            items: (filter, loadProps) => [
+                              '+ 1',
+                              '+ 33',
+                              '+ 44',
+                              '+ 55',
                             ],
+                            itemAsString: (item) => item,
+                            selectedItem: selectedCountryCode,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCountryCode = value;
+                                if (kDebugMode) {
+                                  print(selectedCountryCode);
+                                }
+                              });
+                            },
+                            dropdownBuilder: (context, selectedItem) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.flag,
+                                    size: 16,
+                                  ),
+                                  Text('$selectedCountryCode'),
+                                ],
+                              );
+                            },
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: const TextFieldProps(
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 13, horizontal: 10),
+                                  prefixIcon: Icon(
+                                    Icons.search_outlined,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+
+                              /// item when open ddl...
+                              itemBuilder:
+                                  (context, item, isDisabled, isSelected) {
+                                bool isSelect = item == selectedCountryCode;
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 15),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: isSelect ? Colors.grey : null,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.flag,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(item),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            decoratorProps: const DropDownDecoratorProps(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                    decoratorProps: const DropDownDecoratorProps(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
+                        ),
+                      ],
                     ),
                   ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              FilledButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    if (kDebugMode) {
+                      print(
+                        'Selected Country Code: $selectedCountryCode , Phone: ${phoneController.text}',
+                      );
+                    }
+                  }
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.black26,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
-              ],
-            ),
-          ],
+                child: const Text(
+                  'Click',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -226,7 +274,7 @@ class _CountryCodeInputState extends State<CountryCodeInput> {
 //     },
 //   ),
 // );
-///
+/// Location and translation placeMark
 // CameraPosition cameraPosition = const CameraPosition(
 //   target: LatLng(31.4055239, 31.0561257),
 //   zoom: 13,
