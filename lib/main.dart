@@ -1,9 +1,13 @@
-import 'dart:developer';
+// import 'dart:convert';
+// import 'dart:developer';
 
-import 'package:first/const.dart';
+// import 'package:first/const.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 
+// import 'package:web_socket_channel/io.dart';
+// import 'package:web_socket_channel/web_socket_channel.dart';
+
+// import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 // import 'package:dropdown_search/dropdown_search.dart';
 // import 'package:first/webview.dart';
 // import 'dart:convert';
@@ -21,205 +25,97 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: false),
-      home: const PaypalPaymentView(),
+      home: const HomeView(),
     );
   }
 }
 
-class PaypalPaymentView extends StatefulWidget {
-  const PaypalPaymentView({super.key});
-
-  @override
-  State<PaypalPaymentView> createState() => _PaypalPaymentViewState();
-}
-
-class _PaypalPaymentViewState extends State<PaypalPaymentView> {
-  // String? selectedCountryCode = "+1";
-  // TextEditingController phoneController = TextEditingController();
-  // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff003087),
-        elevation: 0.5,
-        title: const Text(
-          'Paypal Payment',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Icon(Icons.paypal_outlined),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding:
-            const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            const FittedBox(child: TableData()),
-            const SizedBox(height: 20),
-            const Divider(color: Color(0xff003087)),
-            const SizedBox(height: 10),
-            const Text(
-              'You Will Pay After Tax: 34.00 USD',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 50),
-            FilledButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaypalCheckoutView(
-                      sandboxMode: true,
-                      clientId: AppConst.clientId,
-                      secretKey: AppConst.secretId,
-                      transactions: const [
-                        {
-                          "amount": {
-                            "total": '34.00',
-                            "currency": "USD",
-                            "details": {
-                              "subtotal": '34.00',
-                              "shipping": '0',
-                              "shipping_discount": 0
-                            }
-                          },
-                          "description": "Payment Details",
-                          "item_list": {
-                            "items": [
-                              {
-                                "name": "Item 1",
-                                "quantity": 1,
-                                "price": '12',
-                                "currency": "USD"
-                              },
-                              {
-                                "name": "Item 2",
-                                "quantity": 1,
-                                "price": '22',
-                                "currency": "USD"
-                              }
-                            ],
-                          }
-                        },
-                      ],
-                      note:
-                          "Contact us for any questions on your order.",
-                      onSuccess: (Map params) async {
-                        Navigator.pop(context);
-                        log("onSuccess: $params");
-                        debugPrint("onSuccess: $params");
-                      },
-                      onError: (error) {
-                        Navigator.pop(context);
-                        log("onError: $error");
-                        debugPrint('onError: $error');
-                      },
-                      onCancel: () {
-                        Navigator.pop(context);
-                        log('onCancelled:');
-                        debugPrint('onCancelled:');
-                      },
-                    ),
-                  ),
-                );
-              },
-              style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xff003087),
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15))),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Pay by',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Icon(Icons.paypal_outlined),
-                ],
-              ),
-            ),
-          ],
-        ),
+    return const Scaffold(
+      body: Center(
+        child: Text('Hello'),
       ),
     );
   }
 }
 
-class TableData extends StatelessWidget {
-  const TableData({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-      decoration: BoxDecoration(
-        color: const Color(0xff003087).withOpacity(0.08),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      clipBehavior: Clip.antiAlias,
-      columns: [
-        buildDataColumnItem(title: 'Item'),
-        buildDataColumnItem(title: 'Price'),
-        buildDataColumnItem(title: 'Tax'),
-        buildDataColumnItem(title: 'Total'),
-      ],
-      rows: [
-        buildDataRowCells(
-          title: 'Item 1',
-          price: '10.00',
-          tax: '2.00 USD',
-          total: '12.00 USD',
-        ),
-        buildDataRowCells(
-          title: 'Item 2',
-          price: '20.00',
-          tax: '2.00 USD',
-          total: '22.00 USD',
-        ),
-      ],
-    );
-  }
-
-  DataRow buildDataRowCells(
-          {required String title,
-          required String price,
-          required String tax,
-          required String total}) =>
-      DataRow(
-        cells: [
-          DataCell(Text(title)),
-          DataCell(Text(price)),
-          DataCell(Text(tax)),
-          DataCell(Text(total)),
-        ],
-      );
-
-  DataColumn buildDataColumnItem({required String title}) => DataColumn(
-        label: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      );
-}
-
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({
+//     super.key,
+//     required this.title,
+//   });
+//
+//   final String title;
+//
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+//
+// class _MyHomePageState extends State<MyHomePage> {
+//   final TextEditingController _controller = TextEditingController();
+//   final _channel = WebSocketChannel.connect(
+//     Uri.parse('wss://echo.websocket.events'),
+//   );
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.title),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(20),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Form(
+//               child: TextFormField(
+//                 controller: _controller,
+//                 decoration: const InputDecoration(
+//                   labelText: 'Send a message',
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 24),
+//             StreamBuilder(
+//               stream: _channel.stream,
+//               builder: (context, snapshot) {
+//                 if (!snapshot.hasData) {
+//                   return const Text('loading...');
+//                 } else {
+//                   return Text(snapshot.data);
+//                 }
+//               },
+//             )
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: _sendMessage,
+//         tooltip: 'Send message',
+//         child: const Icon(Icons.send),
+//       ),
+//     );
+//   }
+//
+//   void _sendMessage() {
+//     if (_controller.text.isNotEmpty) {
+//       _channel.sink.add(_controller.text);
+//     }
+//   }
+//
+//   @override
+//   void dispose() {
+//     _channel.sink.close();
+//     _controller.dispose();
+//     super.dispose();
+//   }
+// }
+//======================================//
 /// Web View
 // class View extends StatelessWidget {
 //   const View({super.key});
@@ -495,3 +391,379 @@ class TableData extends StatelessWidget {
 //         ),
 //       ),
 //     );
+/// Paypal Integration
+//return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: const Color(0xff003087),
+//         elevation: 0.5,
+//         title: const Text(
+//           'Paypal Payment',
+//           style: TextStyle(
+//               fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+//         ),
+//         actions: const [
+//           Padding(
+//             padding: EdgeInsets.symmetric(horizontal: 8),
+//             child: Icon(Icons.paypal_outlined),
+//           )
+//         ],
+//       ),
+//       body: SingleChildScrollView(
+//         padding:
+//             const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 16),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const SizedBox(height: 20),
+//             const FittedBox(child: TableData()),
+//             const SizedBox(height: 20),
+//             const Divider(color: Color(0xff003087)),
+//             const SizedBox(height: 10),
+//             const Text(
+//               'You Will Pay After Tax: 34.00 USD',
+//               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+//             ),
+//             const SizedBox(height: 50),
+//             FilledButton(
+//               onPressed: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (context) => PaypalCheckoutView(
+//                       sandboxMode: true,
+//                       clientId: AppConst.clientId,
+//                       secretKey: AppConst.secretId,
+//                       transactions: const [
+//                         {
+//                           "amount": {
+//                             "total": '34.00',
+//                             "currency": "USD",
+//                             "details": {
+//                               "subtotal": '34.00',
+//                               "shipping": '0',
+//                               "shipping_discount": 0
+//                             }
+//                           },
+//                           "description": "Payment Details",
+//                           "item_list": {
+//                             "items": [
+//                               {
+//                                 "name": "Item 1",
+//                                 "quantity": 1,
+//                                 "price": '12',
+//                                 "currency": "USD"
+//                               },
+//                               {
+//                                 "name": "Item 2",
+//                                 "quantity": 1,
+//                                 "price": '22',
+//                                 "currency": "USD"
+//                               }
+//                             ],
+//                           }
+//                         },
+//                       ],
+//                       note:
+//                           "Contact us for any questions on your order.",
+//                       onSuccess: (Map params) async {
+//                         Navigator.pop(context);
+//                         log("onSuccess: $params");
+//                         debugPrint("onSuccess: $params");
+//                       },
+//                       onError: (error) {
+//                         Navigator.pop(context);
+//                         log("onError: $error");
+//                         debugPrint('onError: $error');
+//                       },
+//                       onCancel: () {
+//                         Navigator.pop(context);
+//                         log('onCancelled:');
+//                         debugPrint('onCancelled:');
+//                       },
+//                     ),
+//                   ),
+//                 );
+//               },
+//               style: FilledButton.styleFrom(
+//                   backgroundColor: const Color(0xff003087),
+//                   minimumSize: const Size(double.infinity, 50),
+//                   shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(15))),
+//               child: const Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text(
+//                     'Pay by',
+//                     style: TextStyle(
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w500,
+//                     ),
+//                   ),
+//                   SizedBox(width: 10),
+//                   Icon(Icons.paypal_outlined),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//Customize Table
+//class TableData extends StatelessWidget {
+//   const TableData({
+//     super.key,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return DataTable(
+//       decoration: BoxDecoration(
+//         color: const Color(0xff003087).withOpacity(0.08),
+//         borderRadius: BorderRadius.circular(10),
+//       ),
+//       clipBehavior: Clip.antiAlias,
+//       columns: [
+//         buildDataColumnItem(title: 'Item'),
+//         buildDataColumnItem(title: 'Price'),
+//         buildDataColumnItem(title: 'Tax'),
+//         buildDataColumnItem(title: 'Total'),
+//       ],
+//       rows: [
+//         buildDataRowCells(
+//           title: 'Item 1',
+//           price: '10.00',
+//           tax: '2.00 USD',
+//           total: '12.00 USD',
+//         ),
+//         buildDataRowCells(
+//           title: 'Item 2',
+//           price: '20.00',
+//           tax: '2.00 USD',
+//           total: '22.00 USD',
+//         ),
+//       ],
+//     );
+//   }
+//
+//   DataRow buildDataRowCells(
+//           {required String title,
+//           required String price,
+//           required String tax,
+//           required String total}) =>
+//       DataRow(
+//         cells: [
+//           DataCell(Text(title)),
+//           DataCell(Text(price)),
+//           DataCell(Text(tax)),
+//           DataCell(Text(total)),
+//         ],
+//       );
+//
+//   DataColumn buildDataColumnItem({required String title}) => DataColumn(
+//         label: Text(
+//           title,
+//           style: const TextStyle(
+//             fontSize: 16,
+//             fontWeight: FontWeight.w500,
+//           ),
+//         ),
+//       );
+// }
+/// WebSocket
+//ListView Builder child
+//child: ListView.builder(
+//           physics: const BouncingScrollPhysics(),
+//           padding: const EdgeInsets.all(10),
+//           itemCount: _messages.length,
+//           itemBuilder: (context, index) => Card(
+//             elevation: 4,
+//             margin: const EdgeInsets.symmetric(
+//               vertical: 10,
+//             ),
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(12),
+//             ),
+//             child: ListTile(
+//               title: Text(
+//                 _messages[index],
+//                 style: const TextStyle(
+//                   fontSize: 16,
+//                   color: Colors.black87,
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+/// Bitcoin price
+//class WebSocketView extends StatefulWidget {
+//   const WebSocketView({super.key});
+//
+//   @override
+//   State<WebSocketView> createState() => _WebSocketViewState();
+// }
+//
+// class _WebSocketViewState extends State<WebSocketView>
+//     with SingleTickerProviderStateMixin {
+//   // String? selectedCountryCode = "+1";
+//   // TextEditingController phoneController = TextEditingController();
+//   // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+//   // final List<String> _messages = [];
+//   final WebSocketChannel _channel = IOWebSocketChannel.connect(
+//       'wss://stream.binance.com:9443/ws/btcusdt@trade');
+//
+//   String _lastPrice = 'loading...';
+//   String _lastQuantity = 'loading...';
+//
+//   late AnimationController _animationController;
+//   late Animation<double> animation;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _listenToMessage();
+//     _animationController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(
+//         microseconds: 5000,
+//       ),
+//     );
+//
+//     animation = Tween<double>(
+//       begin: 1.0,
+//       end: 1.2,
+//     ).animate(
+//       CurvedAnimation(
+//         parent: _animationController,
+//         curve: Curves.easeInOut,
+//       ),
+//     );
+//   }
+//
+//   void _listenToMessage() {
+//     _channel.stream.listen(
+//       (message) {
+//         final data = jsonDecode(message);
+//         final price = data['p'];
+//         final quantity = data['q'];
+//         _animationController.forward().then(
+//               (_) => _animationController.reverse(),
+//             );
+//         setState(() {
+//           _lastPrice = price;
+//           _lastQuantity = quantity;
+//         });
+//         // setState(() {
+//         //   _messages.add(message);
+//         // });
+//       },
+//       onError: (error) {
+//         setState(() {
+//           _lastPrice = 'Error: $error';
+//           _lastQuantity = 'Error: $error';
+//         });
+//         // setState(() {
+//         //   log('error: $error');
+//         // });
+//       },
+//       onDone: () {
+//         setState(() {
+//           _lastPrice = 'Connection closed';
+//           _lastQuantity = 'Connection closed';
+//         });
+//         // setState(() {
+//         //   _messages.add('Connection closed');
+//         // });
+//       },
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Colors.white,
+//         elevation: 0.5,
+//         title: const Text(
+//           'Web Socket Test Real Time',
+//           style: TextStyle(
+//               fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+//         ),
+//       ),
+//       body: Container(
+//         decoration: BoxDecoration(
+//           gradient: LinearGradient(
+//             begin: Alignment.topCenter,
+//             end: Alignment.bottomCenter,
+//             colors: [
+//               Colors.blue.shade900,
+//               Colors.purple.shade900,
+//             ],
+//           ),
+//         ),
+//         child: Center(
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Icon(Icons.currency_bitcoin,
+//                   color: Colors.amber, size: 100),
+//               const SizedBox(height: 20),
+//               Card(
+//                 elevation: 0.5,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 color: Colors.white,
+//                 child: Padding(
+//                   padding: const EdgeInsets.all(20),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Text("BTC/USDT Real-Time Price",
+//                           style: TextStyle(color: Colors.blue.shade900)),
+//                       const SizedBox(height: 10),
+//                       const Text(
+//                         'Last Trade Price:',
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 6),
+//                       Text(
+//                         "$_lastPrice USDT",
+//                         style: const TextStyle(
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.w500,
+//                           color: Colors.green,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 10),
+//                       const Text(
+//                         'Last Trade Quantity:',
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 6),
+//                       Text(
+//                         "$_lastQuantity BTC",
+//                         style: const TextStyle(
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.w500,
+//                           color: Colors.red,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
