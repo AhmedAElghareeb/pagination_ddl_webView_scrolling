@@ -112,7 +112,7 @@ class _PaypalPaymentViewState extends State<PaypalPaymentView> {
                         },
                       ],
                       note:
-                          "Contact us for any questions on your order.",
+                          "Contact us for any questions on your order, Phone: +201064503827",
                       onSuccess: (Map params) async {
                         Navigator.pop(context);
                         log("onSuccess: $params");

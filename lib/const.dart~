@@ -1,0 +1,6 @@
+abstract class AppConst {
+  static String clientId =
+      'AfZvx2GuCgMH-pizJpxpSsYocXcSQRN-oqSwl6Fy15hovE03V2XUdSmyjGrl6CC1m6oMhlB7uOp5_5ba';
+  static String secretId =
+      'EIUWmgAEQrNVkQ6k3N5juA8WVfTjGorl9hve61pf7DeJzloHvCUQVb4AS2COHHNU5J---idlwkhkNsoS';
+}
