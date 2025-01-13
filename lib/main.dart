@@ -2,7 +2,14 @@
 // import 'dart:developer';
 
 // import 'package:first/const.dart';
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:first/firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:first/local_notification.dart';
 import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
 
 // import 'package:web_socket_channel/io.dart';
 // import 'package:web_socket_channel/web_socket_channel.dart';
@@ -14,7 +21,21 @@ import 'package:flutter/material.dart';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await getFcmToken();
+  runApp(const MyApp());
+}
+
+Future<String> getFcmToken() async {
+  String deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  print('firebase token => $deviceToken  <<<<<<<<<');
+  return deviceToken;
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,27 +43,242 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: false),
-      home: const HomeView(),
+      home: const Notification(),
     );
   }
 }
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class Notification extends StatefulWidget {
+  const Notification({super.key});
+
+  @override
+  State<Notification> createState() => _NotificationState();
+}
+
+class _NotificationState extends State<Notification> {
+  DateTime? selectedDate;
+
+  // DateTime dateNow = DateTime.now();
+  // Timer? notificationTimer;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(3000),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        // _startNotificationTimer();
+      });
+    }
+  }
+
+  // void _startNotificationTimer() {
+  //   notificationTimer?.cancel();
+  //   notificationTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+  //     if (selectedDate != null) {
+  //       if (dateNow.year == selectedDate!.year &&
+  //           dateNow.month == selectedDate!.month &&
+  //           dateNow.day == selectedDate!.day &&
+  //           dateNow.hour == 0 &&
+  //           dateNow.minute == 0 &&
+  //           dateNow.second == 0) {
+  //         _showNotification();
+  //         timer.cancel();
+  //       }
+  //     }
+  //   });
+  // }
+  //
+  // void _showNotification() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: const Text("Reminder"),
+  //         content: const Text("It's time for your scheduled notification!"),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: const Text("Dismiss"),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   notificationTimer?.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Hello'),
+    return Scaffold(
+      body: Padding(
+        padding:
+            const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            selectedDate != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xff088087),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          "${selectedDate?.day} - ${selectedDate?.month} - ${selectedDate?.year}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () => setState(() {
+                          selectedDate = null;
+                        }),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.red,
+                          ),
+                          child: const Icon(Icons.clear,
+                              size: 25, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  )
+                : FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: const Color(0xff003087),
+                    ),
+                    onPressed: () async {
+                      await _selectDate(context);
+                    },
+                    child: const Text("Pick Date"),
+                  ),
+            const SizedBox(height: 20),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: const Color(0xff003256),
+              ),
+              onPressed: () async {
+                final DateTime dateTime =
+                    DateTime.now().add(const Duration(seconds: 10));
+                await NotificationService().makeNotify(
+                  0,
+                  selectedDate ?? dateTime,
+                );
+                print('Time : $dateTime');
+              },
+              child: const Text("Push Notification"),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
+/// Api Request
+// class HomeView extends StatefulWidget {
+//   const HomeView({super.key});
+//
+//   @override
+//   State<HomeView> createState() => _HomeViewState();
+// }
+//
+// class _HomeViewState extends State<HomeView> {
+//   late Future<Album> futureAlbum;
+//
+//   Future<Album> fetchAlbum() async {
+//     final response = await http
+//         .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+//     if (response.statusCode == 200) {
+//       return Album.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+//     } else {
+//       throw Exception('Failed to load album');
+//     }
+//   }
+//
+//   @override
+//   void initState() {
+//     futureAlbum = fetchAlbum();
+//     super.initState();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         elevation: 0.5,
+//         backgroundColor: Colors.white,
+//         title: const Text(
+//           'Api Requests',
+//           style: TextStyle(color: Colors.black),
+//         ),
+//       ),
+//       body: Center(
+//         child: FutureBuilder<Album>(
+//           future: futureAlbum,
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return Text(snapshot.data?.title ?? '');
+//             } else if (snapshot.hasError) {
+//               return Text('${snapshot.error}');
+//             }
+//             return const CircularProgressIndicator();
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class Album {
+//   final int? userId;
+//   final int? id;
+//   final String? title;
+//
+//   const Album({
+//     this.userId,
+//     this.id,
+//     this.title,
+//   });
+//
+//   factory Album.fromJson(Map<String, dynamic> json) {
+//     return Album(
+//       userId: json['userId'],
+//       id: json['id'],
+//       title: json['title'],
+//     );
+//   }
+// }
+///
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({
 //     super.key,
