@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService().init();
+  await LocalNotifications.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -186,14 +186,12 @@ class _NotificationState extends State<Notification> {
                 ),
                 backgroundColor: const Color(0xff003256),
               ),
-              onPressed: () async {
-                final DateTime dateTime =
-                    DateTime.now().add(const Duration(seconds: 10));
-                await NotificationService().makeNotify(
-                  0,
-                  selectedDate ?? dateTime,
+              onPressed: () {
+                LocalNotifications.showPeriodicNotifications(
+                  title: "Title",
+                  body: "Body",
+                  payload: "Payload",
                 );
-                print('Time : $dateTime');
               },
               child: const Text("Push Notification"),
             ),
