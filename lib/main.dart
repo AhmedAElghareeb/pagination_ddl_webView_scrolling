@@ -178,22 +178,25 @@ class _NotificationState extends State<Notification> {
                     child: const Text("Pick Date"),
                   ),
             const SizedBox(height: 20),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            FractionallySizedBox(
+              widthFactor: 1.06,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  backgroundColor: const Color(0xff003256),
                 ),
-                backgroundColor: const Color(0xff003256),
+                onPressed: () {
+                  LocalNotifications.showPeriodicNotifications(
+                    title: "Title",
+                    body: "Body",
+                    payload: "Payload",
+                  );
+                },
+                child: const Text("Push Notification"),
               ),
-              onPressed: () {
-                LocalNotifications.showPeriodicNotifications(
-                  title: "Title",
-                  body: "Body",
-                  payload: "Payload",
-                );
-              },
-              child: const Text("Push Notification"),
             ),
           ],
         ),

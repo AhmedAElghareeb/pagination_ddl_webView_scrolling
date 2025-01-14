@@ -91,7 +91,7 @@
 //====================================================
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-// import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -99,12 +99,12 @@ class LocalNotifications {
   static final FlutterLocalNotificationsPlugin
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  // static final onClickNotification = BehaviorSubject<String>();
+  static final onClickNotification = BehaviorSubject<String>();
 
 // on tap on any notification
-//   static void onNotificationTap(NotificationResponse notificationResponse) {
-//     onClickNotification.add(notificationResponse.payload!);
-//   }
+  static void onNotificationTap(NotificationResponse notificationResponse) {
+    onClickNotification.add(notificationResponse.payload!);
+  }
 
 // initialize the local notifications
   static Future init() async {
@@ -132,8 +132,8 @@ class LocalNotifications {
 
     _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      // onDidReceiveNotificationResponse: onNotificationTap,
-      // onDidReceiveBackgroundNotificationResponse: onNotificationTap,
+      onDidReceiveNotificationResponse: onNotificationTap,
+      onDidReceiveBackgroundNotificationResponse: onNotificationTap,
     );
   }
 
@@ -146,8 +146,8 @@ class LocalNotifications {
   }) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
+      'your_channel_id',
+      'your_channel_name',
       channelDescription: 'your channel description',
       importance: Importance.max,
       priority: Priority.high,
@@ -175,8 +175,8 @@ class LocalNotifications {
   }) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      'channel 2',
-      'your channel name',
+      'channel_2',
+      'your_channel_name',
       channelDescription: 'your channel description',
       importance: Importance.max,
       playSound: true,
@@ -192,7 +192,7 @@ class LocalNotifications {
       body,
       RepeatInterval.everyMinute,
       notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
       androidAllowWhileIdle: true,
     );
@@ -214,8 +214,8 @@ class LocalNotifications {
       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'channel 3',
-          'your channel name',
+          'channel_3',
+          'your_channel_name',
           channelDescription: 'your channel description',
           importance: Importance.max,
           priority: Priority.high,
