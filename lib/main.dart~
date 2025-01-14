@@ -119,8 +119,8 @@ class _NotificationState extends State<Notification> {
               ),
               onPressed: () {
                 LocalNotifications.showSimpleNotification(
-                  title: "Notification",
-                  body: "Simple Notification",
+                  title: "Title",
+                  body: "Body",
                   payload: "Payload",
                 );
               },
@@ -274,8 +274,8 @@ class _NotificationState extends State<Notification> {
               ),
               onPressed: () {
                 LocalNotifications.showScheduleNotification(
-                  title: "Notification",
-                  body: "Notification Every Day At 5 PM",
+                  title: "Title",
+                  body: "Body",
                   payload: "Payload",
                 );
               },

@@ -26,10 +26,10 @@
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
+            android:showWhenLocked="true"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:turnScreenOn="true"
-            android:showWhenLocked="true"
             android:windowSoftInputMode="adjustResize">
 
             <!-- Specifies an Android theme to apply to this Activity as soon as

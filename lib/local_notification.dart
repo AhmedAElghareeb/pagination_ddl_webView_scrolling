@@ -89,10 +89,11 @@
 // }
 
 //====================================================
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class LocalNotifications {
@@ -108,12 +109,18 @@ class LocalNotifications {
 
 // initialize the local notifications
   static Future init() async {
+    // initialize timeZone
+    tz.initializeTimeZones();
+    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    debugPrint('local name: $currentTimeZone');
+
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      onDidReceiveLocalNotification: (id, title, body, payload) {},
+      onDidReceiveLocalNotification: (id, title, body, payload) async {},
     );
     const LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification');
@@ -125,11 +132,23 @@ class LocalNotifications {
     );
 
     // request notification permissions
+    /// Android Permission
     _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()!
         .requestNotificationsPermission();
 
+    /// IOS Permission
+    _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    /// Initialize local notifications
     _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: onNotificationTap,
@@ -163,7 +182,6 @@ class LocalNotifications {
       notificationDetails,
       payload: payload,
     );
-    print("Simple: $title $body $payload");
   }
 
   ///===================================================================///
@@ -175,17 +193,13 @@ class LocalNotifications {
   }) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      'channel_2',
-      'your_channel_name',
-      channelDescription: 'your channel description',
-      importance: Importance.max,
-      playSound: true,
-      visibility: NotificationVisibility.public,
-      priority: Priority.high,
-      ticker: 'ticker',
+      'repeating_channel_id',
+      'repeating_channel_name',
+      channelDescription: 'repeating_description',
     );
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+    );
     await _flutterLocalNotificationsPlugin.periodicallyShow(
       1,
       title,
@@ -194,9 +208,7 @@ class LocalNotifications {
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
-      androidAllowWhileIdle: true,
     );
-    print("Periodic: $title $body $payload");
   }
 
   ///===================================================================///
@@ -206,30 +218,23 @@ class LocalNotifications {
     required String body,
     required String payload,
   }) async {
-    tz.initializeTimeZones();
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       2,
       title,
       body,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+      tz.TZDateTime.now(tz.local).add(const Duration(days: 1)),
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'channel_3',
+          'your_channel_id',
           'your_channel_name',
-          channelDescription: 'your channel description',
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
+          channelDescription: 'your_channel_description',
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload,
-      androidAllowWhileIdle: true,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
     );
-    print("Scheduled: $title $body $payload");
   }
 
   ///===================================================================///
