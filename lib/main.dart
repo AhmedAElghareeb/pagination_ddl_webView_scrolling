@@ -1,41 +1,37 @@
 // import 'dart:convert';
 // import 'dart:developer';
-
 // import 'package:first/const.dart';
-import 'dart:async';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:first/firebase_options.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:first/local_notification.dart';
-import 'package:flutter/material.dart';
+// import 'dart:async';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:first/firebase_options.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:http/http.dart' as http;
-
 // import 'package:web_socket_channel/io.dart';
 // import 'package:web_socket_channel/web_socket_channel.dart';
-
 // import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 // import 'package:dropdown_search/dropdown_search.dart';
 // import 'package:first/webview.dart';
 // import 'dart:convert';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:first/local_notification.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotifications.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await getFcmToken();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  // await getFcmToken();
   runApp(const MyApp());
 }
 
-Future<String> getFcmToken() async {
-  String deviceToken = (await FirebaseMessaging.instance.getToken())!;
-  print('firebase token => $deviceToken  <<<<<<<<<');
-  return deviceToken;
-}
+// Future<String> getFcmToken() async {
+//   String deviceToken = (await FirebaseMessaging.instance.getToken())!;
+//   print('firebase token => $deviceToken  <<<<<<<<<');
+//   return deviceToken;
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -50,46 +46,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Notification extends StatefulWidget {
+class Notification extends StatelessWidget {
   const Notification({super.key});
-
-  @override
-  State<Notification> createState() => _NotificationState();
-}
-
-class _NotificationState extends State<Notification> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-
-  // DateTime dateNow = DateTime.now();
-  // Timer? notificationTimer;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(3000),
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        // _startNotificationTimer();
-      });
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: selectedTime ?? TimeOfDay.now(),
-    );
-    if (picked != null && picked != selectedTime) {
-      setState(() {
-        selectedTime = picked;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,125 +85,6 @@ class _NotificationState extends State<Notification> {
               child: const Text("Show Simple Notification"),
             ),
             const SizedBox(height: 20),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     (selectedDate != null)
-            //         ? Row(
-            //             mainAxisAlignment: MainAxisAlignment.center,
-            //             children: [
-            //               Container(
-            //                 padding: const EdgeInsetsDirectional.symmetric(
-            //                   horizontal: 16,
-            //                   vertical: 10,
-            //                 ),
-            //                 decoration: BoxDecoration(
-            //                   color: const Color(0xff088087),
-            //                   borderRadius: BorderRadius.circular(5),
-            //                 ),
-            //                 child: Text(
-            //                   "${selectedDate?.day} - ${selectedDate?.month} - ${selectedDate?.year}",
-            //                   style: const TextStyle(
-            //                     color: Colors.white,
-            //                   ),
-            //                 ),
-            //               ),
-            //               const SizedBox(width: 10),
-            //               InkWell(
-            //                 onTap: () => setState(() {
-            //                   selectedDate = null;
-            //                 }),
-            //                 child: Container(
-            //                   decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(5),
-            //                     color: Colors.red,
-            //                   ),
-            //                   child: const Icon(Icons.clear,
-            //                       size: 25, color: Colors.white),
-            //                 ),
-            //               ),
-            //             ],
-            //           )
-            //         : Expanded(
-            //             child: FilledButton(
-            //               style: FilledButton.styleFrom(
-            //                 shape: RoundedRectangleBorder(
-            //                   borderRadius: BorderRadius.circular(12),
-            //                 ),
-            //                 backgroundColor: const Color(0xff003087),
-            //               ),
-            //               onPressed: () async {
-            //                 await _selectDate(context);
-            //               },
-            //               child: const Text("Pick Date"),
-            //             ),
-            //           ),
-            //     const SizedBox(width: 10),
-            //     (selectedTime != null)
-            //         ? Row(
-            //             mainAxisAlignment: MainAxisAlignment.center,
-            //             children: [
-            //               Container(
-            //                 padding: const EdgeInsetsDirectional.symmetric(
-            //                   horizontal: 16,
-            //                   vertical: 10,
-            //                 ),
-            //                 decoration: BoxDecoration(
-            //                   color: const Color(0xff088087),
-            //                   borderRadius: BorderRadius.circular(5),
-            //                 ),
-            //                 child: Text(
-            //                   "${selectedTime?.hour} : ${selectedTime?.minute} ${selectedTime?.periodOffset == 00 ? "AM" : "PM"}",
-            //                   style: const TextStyle(
-            //                     color: Colors.white,
-            //                   ),
-            //                 ),
-            //               ),
-            //               const SizedBox(width: 10),
-            //               InkWell(
-            //                 onTap: () => setState(() {
-            //                   selectedTime = null;
-            //                 }),
-            //                 child: Container(
-            //                   decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(5),
-            //                     color: Colors.red,
-            //                   ),
-            //                   child: const Icon(Icons.clear,
-            //                       size: 25, color: Colors.white),
-            //                 ),
-            //               ),
-            //             ],
-            //           )
-            //         : Expanded(
-            //             child: FilledButton(
-            //               style: FilledButton.styleFrom(
-            //                 shape: RoundedRectangleBorder(
-            //                   borderRadius: BorderRadius.circular(12),
-            //                 ),
-            //                 backgroundColor: const Color(0xff003087),
-            //               ),
-            //               onPressed: () async {
-            //                 await _selectTime(context);
-            //               },
-            //               child: const Text("Pick Time"),
-            //             ),
-            //           ),
-            //   ],
-            // ),
-            // const SizedBox(height: 20),
-            // FilledButton(
-            //   style: FilledButton.styleFrom(
-            //     minimumSize: const Size(double.infinity, 50),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //     backgroundColor: const Color(0xff003256),
-            //   ),
-            //   onPressed: () {},
-            //   child: const Text("Show Notification In Picked Date & Time"),
-            // ),
-            // const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
@@ -257,11 +96,11 @@ class _NotificationState extends State<Notification> {
               onPressed: () {
                 LocalNotifications.showPeriodicNotifications(
                   title: "Notification",
-                  body: "Notification Periodically Every Minute",
+                  body: "Notification Periodically Daily",
                   payload: "Payload",
                 );
               },
-              child: const Text("Show Notification Periodically Every Minute"),
+              child: const Text("Show Notification Periodically Daily"),
             ),
             const SizedBox(height: 20),
             FilledButton(
@@ -275,32 +114,36 @@ class _NotificationState extends State<Notification> {
               onPressed: () {
                 LocalNotifications.showScheduleNotification(
                   title: "Notification",
-                  body: "Notification Every Day At 5 PM",
+                  body: "Notification Every 5 Seconds",
                   payload: "Payload",
                 );
               },
-              child: const Text("Show Notification Every Day At 5 PM"),
+              child: const Text("Show Notification Every 5 Seconds"),
             ),
             const SizedBox(
               height: 50,
             ),
             FilledButton(
-              onPressed: () {
-                LocalNotifications.cancelAll();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsetsDirectional.all(20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    content: Center(
-                      child: Text(
-                        'All Notifications Cancelled..!!',
+              onPressed: () async {
+                try {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsetsDirectional.all(20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      content: Center(
+                        child: Text(
+                          'All Notifications Cancelled..!!',
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                  await LocalNotifications.cancelAll();
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
               },
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
@@ -317,6 +160,160 @@ class _NotificationState extends State<Notification> {
     );
   }
 }
+
+/// Date & Time Picker
+// DateTime? selectedDate;
+// TimeOfDay? selectedTime;
+
+// DateTime dateNow = DateTime.now();
+// Timer? notificationTimer;
+
+// Future<void> _selectDate(BuildContext context) async {
+//   final DateTime? picked = await showDatePicker(
+//     context: context,
+//     initialDate: selectedDate ?? DateTime.now(),
+//     firstDate: DateTime.now(),
+//     lastDate: DateTime(3000),
+//   );
+//   if (picked != null && picked != selectedDate) {
+//     setState(() {
+//       selectedDate = picked;
+//       // _startNotificationTimer();
+//     });
+//   }
+// }
+//
+// Future<void> _selectTime(BuildContext context) async {
+//   final TimeOfDay? picked = await showTimePicker(
+//     context: context,
+//     initialTime: selectedTime ?? TimeOfDay.now(),
+//   );
+//   if (picked != null && picked != selectedTime) {
+//     setState(() {
+//       selectedTime = picked;
+//     });
+//   }
+// }
+
+// Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//   children: [
+//     (selectedDate != null)
+//         ? Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Container(
+//                 padding: const EdgeInsetsDirectional.symmetric(
+//                   horizontal: 16,
+//                   vertical: 10,
+//                 ),
+//                 decoration: BoxDecoration(
+//                   color: const Color(0xff088087),
+//                   borderRadius: BorderRadius.circular(5),
+//                 ),
+//                 child: Text(
+//                   "${selectedDate?.day} - ${selectedDate?.month} - ${selectedDate?.year}",
+//                   style: const TextStyle(
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(width: 10),
+//               InkWell(
+//                 onTap: () => setState(() {
+//                   selectedDate = null;
+//                 }),
+//                 child: Container(
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.circular(5),
+//                     color: Colors.red,
+//                   ),
+//                   child: const Icon(Icons.clear,
+//                       size: 25, color: Colors.white),
+//                 ),
+//               ),
+//             ],
+//           )
+//         : Expanded(
+//             child: FilledButton(
+//               style: FilledButton.styleFrom(
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 backgroundColor: const Color(0xff003087),
+//               ),
+//               onPressed: () async {
+//                 await _selectDate(context);
+//               },
+//               child: const Text("Pick Date"),
+//             ),
+//           ),
+//     const SizedBox(width: 10),
+//     (selectedTime != null)
+//         ? Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Container(
+//                 padding: const EdgeInsetsDirectional.symmetric(
+//                   horizontal: 16,
+//                   vertical: 10,
+//                 ),
+//                 decoration: BoxDecoration(
+//                   color: const Color(0xff088087),
+//                   borderRadius: BorderRadius.circular(5),
+//                 ),
+//                 child: Text(
+//                   "${selectedTime?.hour} : ${selectedTime?.minute} ${selectedTime?.periodOffset == 00 ? "AM" : "PM"}",
+//                   style: const TextStyle(
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(width: 10),
+//               InkWell(
+//                 onTap: () => setState(() {
+//                   selectedTime = null;
+//                 }),
+//                 child: Container(
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.circular(5),
+//                     color: Colors.red,
+//                   ),
+//                   child: const Icon(Icons.clear,
+//                       size: 25, color: Colors.white),
+//                 ),
+//               ),
+//             ],
+//           )
+//         : Expanded(
+//             child: FilledButton(
+//               style: FilledButton.styleFrom(
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 backgroundColor: const Color(0xff003087),
+//               ),
+//               onPressed: () async {
+//                 await _selectTime(context);
+//               },
+//               child: const Text("Pick Time"),
+//             ),
+//           ),
+//   ],
+// ),
+// const SizedBox(height: 20),
+// FilledButton(
+//   style: FilledButton.styleFrom(
+//     minimumSize: const Size(double.infinity, 50),
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(12),
+//     ),
+//     backgroundColor: const Color(0xff003256),
+//   ),
+//   onPressed: () {},
+//   child: const Text("Show Notification In Picked Date & Time"),
+// ),
+// const SizedBox(height: 20),
 
 /// Api Request
 // class HomeView extends StatefulWidget {
@@ -392,81 +389,8 @@ class _NotificationState extends State<Notification> {
 //     );
 //   }
 // }
-///
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({
-//     super.key,
-//     required this.title,
-//   });
-//
-//   final String title;
-//
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
-//
-// class _MyHomePageState extends State<MyHomePage> {
-//   final TextEditingController _controller = TextEditingController();
-//   final _channel = WebSocketChannel.connect(
-//     Uri.parse('wss://echo.websocket.events'),
-//   );
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Form(
-//               child: TextFormField(
-//                 controller: _controller,
-//                 decoration: const InputDecoration(
-//                   labelText: 'Send a message',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 24),
-//             StreamBuilder(
-//               stream: _channel.stream,
-//               builder: (context, snapshot) {
-//                 if (!snapshot.hasData) {
-//                   return const Text('loading...');
-//                 } else {
-//                   return Text(snapshot.data);
-//                 }
-//               },
-//             )
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: _sendMessage,
-//         tooltip: 'Send message',
-//         child: const Icon(Icons.send),
-//       ),
-//     );
-//   }
-//
-//   void _sendMessage() {
-//     if (_controller.text.isNotEmpty) {
-//       _channel.sink.add(_controller.text);
-//     }
-//   }
-//
-//   @override
-//   void dispose() {
-//     _channel.sink.close();
-//     _controller.dispose();
-//     super.dispose();
-//   }
-// }
-//======================================//
-/// Web View
+/// =====================================
+/// Web View Scrolling
 // class View extends StatelessWidget {
 //   const View({super.key});
 //
@@ -534,6 +458,7 @@ class _NotificationState extends State<Notification> {
 //     );
 //   }
 // }
+/// =====================================
 /// Google Map
 // return Scaffold(
 //   body: GoogleMap(
@@ -586,6 +511,7 @@ class _NotificationState extends State<Notification> {
 //     print('Error: $e');
 //   }
 // }
+/// =====================================
 /// Searchable DDL
 //return Scaffold(
 //       body: SingleChildScrollView(
@@ -741,6 +667,7 @@ class _NotificationState extends State<Notification> {
 //         ),
 //       ),
 //     );
+/// =====================================
 /// Paypal Integration
 //return Scaffold(
 //       appBar: AppBar(
@@ -919,6 +846,7 @@ class _NotificationState extends State<Notification> {
 //         ),
 //       );
 // }
+/// =====================================
 /// WebSocket
 //ListView Builder child
 //child: ListView.builder(
@@ -944,6 +872,7 @@ class _NotificationState extends State<Notification> {
 //             ),
 //           ),
 //         ),
+/// =====================================
 /// Bitcoin price
 //class WebSocketView extends StatefulWidget {
 //   const WebSocketView({super.key});
@@ -1117,3 +1046,78 @@ class _NotificationState extends State<Notification> {
 //     );
 //   }
 // }
+/// =====================================
+/// Web Socket test message
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({
+//     super.key,
+//     required this.title,
+//   });
+//
+//   final String title;
+//
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+//
+// class _MyHomePageState extends State<MyHomePage> {
+//   final TextEditingController _controller = TextEditingController();
+//   final _channel = WebSocketChannel.connect(
+//     Uri.parse('wss://echo.websocket.events'),
+//   );
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.title),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(20),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Form(
+//               child: TextFormField(
+//                 controller: _controller,
+//                 decoration: const InputDecoration(
+//                   labelText: 'Send a message',
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 24),
+//             StreamBuilder(
+//               stream: _channel.stream,
+//               builder: (context, snapshot) {
+//                 if (!snapshot.hasData) {
+//                   return const Text('loading...');
+//                 } else {
+//                   return Text(snapshot.data);
+//                 }
+//               },
+//             )
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: _sendMessage,
+//         tooltip: 'Send message',
+//         child: const Icon(Icons.send),
+//       ),
+//     );
+//   }
+//
+//   void _sendMessage() {
+//     if (_controller.text.isNotEmpty) {
+//       _channel.sink.add(_controller.text);
+//     }
+//   }
+//
+//   @override
+//   void dispose() {
+//     _channel.sink.close();
+//     _controller.dispose();
+//     super.dispose();
+//   }
+// }
+//======================================//

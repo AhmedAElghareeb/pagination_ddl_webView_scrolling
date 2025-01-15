@@ -279,7 +279,7 @@ class LocalNotifications {
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         androidAllowWhileIdle: true,
-        matchDateTimeComponents: DateTimeComponents.time,
+        matchDateTimeComponents: DateTimeComponents.dateAndTime,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,
