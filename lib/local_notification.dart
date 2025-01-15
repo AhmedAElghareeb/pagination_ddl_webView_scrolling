@@ -263,13 +263,11 @@ class LocalNotifications {
     required String payload,
   }) async {
     try {
-      final tz.TZDateTime scheduledTime =
-          tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
       await _flutterLocalNotificationsPlugin.zonedSchedule(
         2,
         title,
         body,
-        scheduledTime,
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'your_channel_id',
@@ -279,7 +277,6 @@ class LocalNotifications {
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         androidAllowWhileIdle: true,
-        matchDateTimeComponents: DateTimeComponents.time,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,

@@ -124,26 +124,13 @@ class Notification extends StatelessWidget {
               height: 50,
             ),
             FilledButton(
-              onPressed: () async {
-                try {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsetsDirectional.all(20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      content: Center(
-                        child: Text(
-                          'All Notifications Cancelled..!!',
-                        ),
-                      ),
-                    ),
-                  );
-                  await LocalNotifications.cancelAll();
-                } catch (e) {
-                  debugPrint(e.toString());
-                }
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Cancel All Notifications"),
+                  ),
+                );
+                LocalNotifications.cancelAll();
               },
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
