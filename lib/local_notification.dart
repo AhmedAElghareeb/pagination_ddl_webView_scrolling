@@ -257,6 +257,47 @@ class LocalNotifications {
 
   ///===================================================================///
   // to schedule a local notification
+  // Mohamed Gamal Not Working
+  static Future showScheduleNotification2({
+    required String title,
+    required String body,
+    required String payload,
+  }) async {
+    try {
+      await _flutterLocalNotificationsPlugin.zonedSchedule(
+        2,
+        title,
+        body,
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'your_channel_id',
+            'your_channel_name',
+            channelDescription: 'your_channel_description',
+          ),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
+      );
+      await Future.delayed(
+        const Duration(seconds: 3),
+        () async {
+          await showScheduleNotification(
+              title: title, body: body, payload: payload);
+        },
+      );
+      debugPrint('Scheduled Ahmed => $title $body');
+    } catch (e) {
+      debugPrint('Error showing notification: $e');
+    }
+  }
+
+  ///===================================================================///
+  // Mohamed Gamal
+  // to schedule a local notification
   static Future showScheduleNotification({
     required String title,
     required String body,
