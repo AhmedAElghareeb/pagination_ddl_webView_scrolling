@@ -1,4 +1,5 @@
 import 'package:first/local_notification_helper.dart';
+import 'package:first/media_query_helper.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
@@ -62,6 +63,7 @@ class _HomeViewState extends State<HomeView> {
               child: const Text('Show Simple Notification'),
             ),
             const SizedBox(height: 20),
+            // SizedBox(height: MediaQueryHelper.getScreenHeight(context) * 0.5),
             ElevatedButton(
               onPressed: _notificationService.showPeriodicNotification,
               child: const Text('Show Periodic Notification'),
